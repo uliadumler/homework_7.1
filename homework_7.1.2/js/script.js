@@ -1,7 +1,11 @@
-let date = new Date(),
-		time = addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
-		
-document.write(time);
+function myClock () {
+	let date = new Date(),
+			time = addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
+	
+	document.getElementById('timer').innerHTML = time
+}
+
+myClock();
 
 function addZero(num) {
 	if (num >= 0 && num < 10) {
@@ -10,3 +14,6 @@ function addZero(num) {
 		return num;
 	}
 }
+
+setInterval(myClock, 1000);
+
