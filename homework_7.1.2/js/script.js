@@ -17,3 +17,14 @@ function addZero(num) {
 
 setInterval(myClock, 1000);
 
+
+
+let age = document.getElementById('age');
+ 
+function showUser(surname, name) {
+  alert("Пользователь " + surname + " " + name + ", его возраст " + this.value);
+}
+
+let message = showUser.bind(age);
+
+console.log(message('Ivanov', 'Ivan')); 
