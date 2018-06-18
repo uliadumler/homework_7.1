@@ -27,4 +27,4 @@ function showUser(surname, name) {
 
 let message = showUser.bind(age);
 
-console.log(message('Ivanov', 'Ivan')); 
+message('Ivanov', 'Ivan'); 

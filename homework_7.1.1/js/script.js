@@ -127,8 +127,92 @@ window.addEventListener('DOMContentLoaded', function() {
 			document.body.style.overflow = 'hidden';
 		});
 	}
-}); 
 
+	// Form 
+	let message = new Object();
+	message.loading = 'Загрузка...';
+	message.success = 'Спасибо! Скоро мы с вами свяжемся';
+	message.error = 'Что-то пошло не так...';
+
+	let form = document.getElementsByClassName('main-form')[0],
+			input = form.getElementsByTagName('input'),
+			statusMessage = document.createElement('div');
+
+	statusMessage.classList.add('status');// присваиваем название класса
+
+	form.addEventListener('submit', function(event) {
+		event.preventDefault();
+		form.appendChild(statusMessage);
+
+		// AJAX
+		let request = new XMLHttpRequest();
+		request.open("POST", 'server.php');
+
+		request.setRequestHeader("Content-Type", "application/x-ww-form-urlencoded");// кодировка для правильной передачи данных
+
+		let formData = new FormData(form);// собираем все данные из полей ввода формы
+
+		request.send(formData); // отправляем данные на сервер
+
+		request.onreadystatechange = function() {          // отслеживаем статус готовности запроса
+			if (request.readyState < 4) {
+				statusMessage.innerHTML = message.loading;
+			} else if (request.readyState === 4) {
+				if (request.status == 200 && request.status < 300) {
+					statusMessage.innerHTML = message.success;
+					// здесь можно добавить контент на страницу
+				} else {
+					statusMessage.innerHTML = message.error;
+				}
+			}
+		} 
+
+		for (let i = 0; i < input.length; i++) {
+			input[i].value = ''; // очищаем поля ввода
+		}
+	});
+
+	// Contact form 
+	
+	let contactForm = document.getElementById('form'),
+			contactFormInput = contactForm.getElementsByTagName('input');
+			
+	statusMessage.classList.add('status');// присваиваем название класса
+
+	contactForm.addEventListener('submit', function(event) {
+		event.preventDefault();
+		contactForm.appendChild(statusMessage);
+
+		// AJAX
+		let request = new XMLHttpRequest();
+		request.open("POST", 'server.php');
+
+		request.setRequestHeader("Content-Type", "application/x-ww-form-urlencoded");// кодировка для правильной передачи данных
+
+		let formData = new FormData(contactForm);// собираем все данные из полей ввода формы
+
+		request.send(formData); // отправляем данные на сервер
+
+		request.onreadystatechange = function() {          // отслеживаем статус готовности запроса
+			if (request.readyState < 4) {
+				statusMessage.innerHTML = message.loading;
+			} else if (request.readyState === 4) {
+				if (request.status == 200 && request.status < 300) {
+					statusMessage.innerHTML = message.success;
+					// здесь можно добавить контент на страницу
+				} else {
+					statusMessage.innerHTML = message.error;
+				}
+			}
+		} 
+
+		for (let i = 0; i < contactFormInput.length; i++) {
+			contactFormInput[i].value = ''; // очищаем поля ввода
+		}
+	});
+});
+
+	
 
 
 
