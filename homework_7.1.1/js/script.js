@@ -2,7 +2,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	
 	// Timer
 
-	let deadline = '2018-03-20'; // дата, на которой заканчивается таймер
+	let deadline = '2018-07-20'; // дата, на которой заканчивается таймер
 
 	// Расчитываем сколько времени осталось до дедлайна
 
@@ -127,25 +127,23 @@ window.addEventListener('DOMContentLoaded', function() {
 			document.body.style.overflow = 'hidden';
 		});
 	}
-
-	// Form 
-
-	let message = new Object();
-	message.loading = 'Загрузка...';
-	message.success = 'Спасибо! Скоро мы с вами свяжемся';
-	message.error = 'Что-то пошло не так...';
+		
+	// AJAX
 
 	let form = document.getElementsByClassName('main-form')[0],
 			input = form.getElementsByTagName('input'),
-			statusMessage = document.createElement('div');
+			contactForm = document.getElementById('form'),
+			contactFormInput = contactForm.getElementsByTagName('input'),
+			statusMessage = document.createElement('div'); // создаем div, куда помещаем сообщение
 
 	statusMessage.classList.add('status');// присваиваем название класса
 
-	form.addEventListener('submit', function(event) {
-		event.preventDefault();
-		form.appendChild(statusMessage);
-
-		// AJAX
+	function AJAX(form, input) {
+		let message = new Object();
+		message.loading = 'Загрузка...';
+		message.success = 'Спасибо! Скоро мы с вами свяжемся';
+		message.error = 'Что-то пошло не так...';
+		
 		let request = new XMLHttpRequest();
 		request.open("POST", 'server.php');
 
@@ -171,45 +169,20 @@ window.addEventListener('DOMContentLoaded', function() {
 		for (let i = 0; i < input.length; i++) {
 			input[i].value = ''; // очищаем поля ввода
 		}
-	});
+	}
 
-	// Contact form 
-	
-	let contactForm = document.getElementById('form'),
-			contactFormInput = contactForm.getElementsByTagName('input');
-			
-	statusMessage.classList.add('status');// присваиваем название класса
+	form.addEventListener('submit', function(event) {
+		event.preventDefault();
+		form.appendChild(statusMessage);
+
+		AJAX(form, input);
+	});
 
 	contactForm.addEventListener('submit', function(event) {
 		event.preventDefault();
 		contactForm.appendChild(statusMessage);
 
-		// AJAX
-		let request = new XMLHttpRequest();
-		request.open("POST", 'server.php');
-
-		request.setRequestHeader("Content-Type", "application/x-ww-form-urlencoded");// кодировка для правильной передачи данных
-
-		let formData = new FormData(contactForm);// собираем все данные из полей ввода формы
-
-		request.send(formData); // отправляем данные на сервер
-
-		request.onreadystatechange = function() {          // отслеживаем статус готовности запроса
-			if (request.readyState < 4) {
-				statusMessage.innerHTML = message.loading;
-			} else if (request.readyState === 4) {
-				if (request.status == 200 && request.status < 300) {
-					statusMessage.innerHTML = message.success;
-					// здесь можно добавить контент на страницу
-				} else {
-					statusMessage.innerHTML = message.error;
-				}
-			}
-		} 
-
-		for (let i = 0; i < contactFormInput.length; i++) {
-			contactFormInput[i].value = ''; // очищаем поля ввода
-		}
+		AJAX(contactForm, contactFormInput);
 	});
 
 	// Slider
@@ -223,7 +196,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 	showSlides(slideIndex);
 
-	// Поазываем слайды
+	// Показываем слайды
 	function showSlides(n) {
 
 		if (n > slides.length) {
@@ -245,7 +218,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		dots[slideIndex - 1].classList.add('dot-active'); // делаем активной 1-ую кнопку
 	}
 
-	// Перелистываем какое-то количество слайдов слайдов
+	// Перелистываем какое-то количество слайдов
 	function plusSlides (n) {
 		showSlides(slideIndex += n);
 	}
@@ -258,16 +231,16 @@ window.addEventListener('DOMContentLoaded', function() {
 	prev.addEventListener('click', function(){
 		plusSlides(-1); // перелистнуть на слайд назад
 		for (let i = 0; i < slides.length; i++) {
-		slides[i].classList.remove('fade');
-		slides[i].classList.add('fades');
+			slides[i].classList.remove('fade');
+			slides[i].classList.add('fades');
 		}
 	});
 
 	next.addEventListener('click', function(){
 		plusSlides(1);// перелистнуть на слайд вперед
 		for (let i = 0; i < slides.length; i++) {
-		slides[i].classList.remove('fades');
-		slides[i].classList.add('fade');
+			slides[i].classList.remove('fades');
+			slides[i].classList.add('fade');
 		}
 	});
 
@@ -343,7 +316,9 @@ window.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
-	var setValue = function(elem, value, step, speed){
+	// Анимируем счетчик
+
+	let setValue = function(elem, value, step, speed){
 	   
 	  let interval = setInterval(function() {
       if (elem.innerHTML * 1 + step >= value) {
