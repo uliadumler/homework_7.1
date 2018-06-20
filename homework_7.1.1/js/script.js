@@ -129,6 +129,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 
 	// Form 
+
 	let message = new Object();
 	message.loading = 'Загрузка...';
 	message.success = 'Спасибо! Скоро мы с вами свяжемся';
@@ -210,6 +211,149 @@ window.addEventListener('DOMContentLoaded', function() {
 			contactFormInput[i].value = ''; // очищаем поля ввода
 		}
 	});
+
+	// Slider
+
+	let slideIndex = 1, // слайд, который виден
+			slides = document.getElementsByClassName('slider-item'),
+			prev = document.querySelector('.prev'), // стрелки 
+			next = document.querySelector('.next'),
+			dotsWrap = document.querySelector('.slider-dots'),
+			dots = document.getElementsByClassName('dot');
+
+	showSlides(slideIndex);
+
+	// Поазываем слайды
+	function showSlides(n) {
+
+		if (n > slides.length) {
+			slideIndex = 1; // 1-й слайд
+		} 
+		if (n < 1) {
+			slideIndex = slides.length; // последний слайд
+		}
+
+		for (let i = 0; i < slides.length; i++) {
+			slides[i].style.display = 'none';
+		}
+
+		for (let i = 0; i < dots.length; i++) {
+			dots[i].classList.remove('dot-active');
+		}		
+
+		slides[slideIndex - 1].style.display = 'block'; // показываем 1-й слайд [0]
+		dots[slideIndex - 1].classList.add('dot-active'); // делаем активной 1-ую кнопку
+	}
+
+	// Перелистываем какое-то количество слайдов слайдов
+	function plusSlides (n) {
+		showSlides(slideIndex += n);
+	}
+
+	// Получаем индекс текущего активного слайда
+	function currentSlide(n) {
+		showSlides(slideIndex = n);
+	}
+
+	prev.addEventListener('click', function(){
+		plusSlides(-1); // перелистнуть на слайд назад
+		for (let i = 0; i < slides.length; i++) {
+		slides[i].classList.remove('fade');
+		slides[i].classList.add('fades');
+		}
+	});
+
+	next.addEventListener('click', function(){
+		plusSlides(1);// перелистнуть на слайд вперед
+		for (let i = 0; i < slides.length; i++) {
+		slides[i].classList.remove('fades');
+		slides[i].classList.add('fade');
+		}
+	});
+
+	dotsWrap.addEventListener('click', function(event) {
+		for(let i = 0; i < dots.length + 1; i++) {
+			if (event.target.classList.contains('dot') && event.target == dots[i - 1]) {
+				currentSlide(i);
+				for (let i = 0; i < slides.length; i++) {
+					slides[i].classList.remove('fades');
+					slides[i].classList.remove('fade');
+					slides[i].classList.add('bright');
+				}
+			}
+		}
+	});
+
+	// Calc 
+
+	let persons = document.getElementsByClassName('counter-block-input')[0],
+			restDays = document.getElementsByClassName('counter-block-input')[1],
+			place = document.getElementById('select'),
+			totalValue = document.getElementById('total'),
+			personsSum = 0,
+			daysSum = 0,
+			total = 0;
+
+	totalValue.innerHTML = 0;
+
+	persons.addEventListener('change', function(){
+		personsSum = +this.value;
+		total = daysSum * personsSum * 2000;
+		if (persons.value == '' || restDays.value == '') {
+			totalValue.innerHTML = 0;
+		} else {
+			//totalValue.innerHTML = total;
+			setValue(totalValue, total, 100, 100);
+		}
+	});
+
+	restDays.addEventListener('change', function(){
+		daysSum = +this.value;
+		total = daysSum * personsSum * 2000;
+		if (persons.value == '' || restDays.value == '') {
+			totalValue.innerHTML = 0;
+		} else {
+			//totalValue.innerHTML = total;
+			setValue(totalValue, total, 100, 100);
+		}
+	});
+
+	//persons.onkeypress = e => !(e.key === '.' || e.key === '+' || e.key === 'e');
+	//restDays.onkeypress = e => !(e.key === '.' || e.key === '+' || e.key === 'e');
+
+	persons.onkeypress = function(e) {  
+		if (e.key === '.' || e.key === '+' || e.key === 'e') {
+			return false;
+		}
+	}
+
+	restDays.onkeypress = function(e) {  
+		if (e.key === '.' || e.key === '+' || e.key === 'e') {
+			return false;
+		}
+	}
+
+	place.addEventListener('change', function() {
+		if (restDays.value == '' || persons.value == '') {
+			totalValue.innerHTML = 0;
+		} else {
+			let a = total;
+			let b = a * this.options[this.selectedIndex].value;
+			setValue(totalValue, b, 100, 50);
+		}
+	});
+
+	var setValue = function(elem, value, step, speed){
+	   
+	  let interval = setInterval(function() {
+      if (elem.innerHTML * 1 + step >= value) {
+        elem.innerHTML = value;
+        clearInterval(interval);
+      } else {
+        elem.innerHTML = elem.innerHTML * 1 + step;
+      }
+  	}, speed);
+  }
 });
 
 	
