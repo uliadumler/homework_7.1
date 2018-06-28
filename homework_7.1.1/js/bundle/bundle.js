@@ -57,6 +57,9 @@ function ajax() {
 			} else if (request.readyState === 4) {
 				if (request.status == 200 && request.status < 300) {
 					statusMessage.innerHTML = message.success;
+					setTimeout(function() {
+						statusMessage.innerHTML = '';
+					}, 2000);
 					// здесь можно добавить контент на страницу
 				} else {
 					statusMessage.innerHTML = message.error;
@@ -87,6 +90,7 @@ function ajax() {
 module.exports = ajax;
 },{}],3:[function(require,module,exports){
 function calc () {
+
 	// Calc 
 
 	let persons = document.getElementsByClassName('counter-block-input')[0],
@@ -95,55 +99,48 @@ function calc () {
 			totalValue = document.getElementById('total'),
 			personsSum = 0,
 			daysSum = 0,
-			total = 0;
+			total = 0,
+			koef = 1;
 
 	totalValue.innerHTML = 0;
 
-	persons.addEventListener('change', function(){
-		personsSum = +this.value;
-		total = daysSum * personsSum * 2000;
+	reloadTotalValue = function() {
+		total = daysSum * personsSum * koef * 2000;
 		if (persons.value == '' || restDays.value == '') {
 			totalValue.innerHTML = 0;
 		} else {
-			//totalValue.innerHTML = total;
 			setValue(totalValue, total, 100, 100);
 		}
+	};
+
+	persons.addEventListener('change', function(){
+		personsSum = +this.value;
+		reloadTotalValue();
 	});
 
 	restDays.addEventListener('change', function(){
 		daysSum = +this.value;
-		total = daysSum * personsSum * 2000;
-		if (persons.value == '' || restDays.value == '') {
-			totalValue.innerHTML = 0;
-		} else {
-			//totalValue.innerHTML = total;
-			setValue(totalValue, total, 100, 100);
-		}
+		reloadTotalValue();
 	});
 
 	//persons.onkeypress = e => !(e.key === '.' || e.key === '+' || e.key === 'e');
 	//restDays.onkeypress = e => !(e.key === '.' || e.key === '+' || e.key === 'e');
 
 	persons.onkeypress = function(e) {  
-		if (e.key === '.' || e.key === '+' || e.key === 'e') {
+		if (e.key === '.' || e.key === '+' || e.key === 'e' || e.key === '-') {
 			return false;
 		}
 	}
 
 	restDays.onkeypress = function(e) {  
-		if (e.key === '.' || e.key === '+' || e.key === 'e') {
+		if (e.key === '.' || e.key === '+' || e.key === 'e' || e.key === '-') {
 			return false;
 		}
 	}
 
 	place.addEventListener('change', function() {
-		if (restDays.value == '' || persons.value == '') {
-			totalValue.innerHTML = 0;
-		} else {
-			let a = total;
-			let b = a * this.options[this.selectedIndex].value;
-			setValue(totalValue, b, 100, 50);
-		}
+			koef = this.options[this.selectedIndex].value;
+			reloadTotalValue();
 	});
 
 	// Анимируем счетчик

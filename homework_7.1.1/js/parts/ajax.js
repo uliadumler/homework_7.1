@@ -30,6 +30,9 @@ function ajax() {
 			} else if (request.readyState === 4) {
 				if (request.status == 200 && request.status < 300) {
 					statusMessage.innerHTML = message.success;
+					setTimeout(function() {
+						statusMessage.innerHTML = '';
+					}, 2000);
 					// здесь можно добавить контент на страницу
 				} else {
 					statusMessage.innerHTML = message.error;
